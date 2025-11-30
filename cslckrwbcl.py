@@ -67,7 +67,7 @@ if __name__ == "__main__":
                         shutdown()
                         print("Shutdown Initiated")
                     elif action == 'updatewbcl':
-                        url = 'https://github.com/raedhashmi/cslckr/raw/refs/heads/main/cslckrwbcl.exe'
+                        url = 'https://github.com/raedhashmi/cslckrwbcl/raw/refs/heads/main/dist/cslckrwbcl.exe'
                         local_path = os.path.join(destination_location, "cslckrwbcl.exe")
                         with requests.get(url, stream=True, timeout=30) as r:
                             r.raise_for_status()
