@@ -9,6 +9,9 @@ exe = os.path.join(destination, filename)
 if len(sys.argv) !=2:
     print('[LOG] Installing')
     if os.path.exists(destination):
+        with os.scandir(destination) as entries:
+            for entry in entries:
+                os.remove(entry)
         os.removedirs(destination)
     else: pass
     
