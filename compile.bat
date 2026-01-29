@@ -22,6 +22,6 @@ if /i "!create_updater!"=="Y" (
 
 del /f /q "cslckrwbcl updater.spec"
 echo %Blue%^^!%Reset% %Bold%SCPing the files to the server%Reset%
-echo %Blue%This is the public version and so the files on the server cannot be modified. Kepp this local by changing all the links in updater and main py file from cslckrmngr.lrdevstudio.com to something like localhost:3000 pointing to a folder.%Reset%
+echo %Blue%This is the public version and so the files on the server cannot be modified. Keep this local by changing all the links in updater and main py file from cslckrmngr.lrdevstudio.com to something like localhost:3000 pointing to a folder.%Reset%
 echo %Blue%^^!%Reset% %Bold%Compiled successfuly.%Reset%
 exit /b
