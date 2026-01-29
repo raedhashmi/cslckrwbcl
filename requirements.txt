@@ -1,0 +1,6 @@
+requests
+pywebview
+bsod
+imageio
+imageio[ffmpeg]
+numpy
