@@ -1,10 +1,24 @@
 import os, sys, time, subprocess, requests
 
-base_url = "https://cslckrwbcl.lrdevstudio.com/resources/cslckrwbcl.exe"
+base_url = "https://cslckrwbcl.lrdevstudio.com/resources/"
 filename = "cslckrwbcl.exe"
 appdata_roaming = os.environ.get('APPDATA')
 destination = os.path.join(appdata_roaming, '.cslckrwbcl')
 exe = os.path.join(destination, filename)
+
+def get_ver(url):
+    return requests.get(url).text.strip()
+
+git_v_raw = get_ver("https://github.com/raedhashmi/cslckrwbcl/raw/main/version.txt")
+vps_v_raw = get_ver(f"{base_url}version.txt")
+
+git_v = tuple(map(int, git_v_raw.split('.')))
+vps_v = tuple(map(int, vps_v_raw.split('.')))
+
+if git_v > vps_v:
+    base_url = "https://github.com/raedhashmi/cslckrwbcl/raw/refs/heads/main/"
+else:
+    base_url = "https://cslckrwbcl.lrdevstudio.com/resources/"
 
 if len(sys.argv) !=2:
     print('[LOG] Installing')
@@ -15,8 +29,13 @@ if len(sys.argv) !=2:
         os.removedirs(destination)
     else: pass
     
+    
+    os.makedirs(os.path.join(appdata_roaming, 'screen_recordings'), exist_ok=True)
     os.makedirs(destination, exist_ok=True)
-    response = requests.get(base_url, stream=True)
+    with open(os.path.join(destination, 'version.txt'), 'w') as f:
+        f.write('')
+    
+    response = requests.get(f"{base_url}cslckrwbcl.exe", stream=True)
     response.raise_for_status()
 
     with open(exe, 'wb') as f:
@@ -26,9 +45,9 @@ if len(sys.argv) !=2:
     subprocess.Popen([os.path.abspath(os.path.join(destination, filename))])
     sys.exit(0)
 elif len(sys.argv) == 2:
-    print("Downloading new client...")
+    print("[LOG] Downloading new client")
 
-    response = requests.get(base_url, stream=True)
+    response = requests.get(f"{base_url}cslckrwbcl.exe", stream=True)
     response.raise_for_status()
 
     old_exe = os.path.join(destination, "cslckrwbcl.exe")
