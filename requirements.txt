@@ -1,6 +1,6 @@
+bsod
+numpy
+imageio
 requests
 pywebview
-bsod
-imageio
 imageio[ffmpeg]
-numpy

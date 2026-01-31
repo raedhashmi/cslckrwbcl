@@ -1,71 +1,51 @@
-import os, sys, time, subprocess, requests
+import os, sys, subprocess, requests, shutil
 
-base_url = "https://cslckrwbcl.lrdevstudio.com/resources/"
 filename = "cslckrwbcl.exe"
 appdata_roaming = os.environ.get('APPDATA')
+base_url = "https://cslckrwbcl.lrdevstudio.com/resources"
 destination = os.path.join(appdata_roaming, '.cslckrwbcl')
 exe = os.path.join(destination, filename)
+version = 0
 
-def get_ver(url):
-    return requests.get(url).text.strip()
+gv, vv = float(requests.get(f"{base_url}/version.txt").text.strip())
 
-git_v_raw = get_ver("https://github.com/raedhashmi/cslckrwbcl/raw/main/version.txt")
-vps_v_raw = get_ver(f"{base_url}version.txt")
-
-git_v = tuple(map(int, git_v_raw.split('.')))
-vps_v = tuple(map(int, vps_v_raw.split('.')))
-
-if git_v > vps_v:
-    base_url = "https://github.com/raedhashmi/cslckrwbcl/raw/refs/heads/main/"
+if gv > vv:
+    base_url = "https://github.com/raedhashmi/cslckrwbcl/raw/refs/heads/main/output/"
+    version = gv
 else:
     base_url = "https://cslckrwbcl.lrdevstudio.com/resources/"
+    version = vv
 
-if len(sys.argv) !=2:
-    print('[LOG] Installing')
+if "update" not in sys.argv:
     if os.path.exists(destination):
-        with os.scandir(destination) as entries:
-            for entry in entries:
-                os.remove(entry)
-        os.removedirs(destination)
-    else: pass
+        shutil.rmtree(destination)
     
-    
-    os.makedirs(os.path.join(appdata_roaming, 'screen_recordings'), exist_ok=True)
     os.makedirs(destination, exist_ok=True)
-    with open(os.path.join(destination, 'version.txt'), 'w') as f:
-        f.write('')
     
-    response = requests.get(f"{base_url}cslckrwbcl.exe", stream=True)
+    response = requests.get(f"{base_url}/cslckrwbcl.exe", stream=True)
     response.raise_for_status()
 
     with open(exe, 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
 
-    subprocess.Popen([os.path.abspath(os.path.join(destination, filename))])
-    sys.exit(0)
-elif len(sys.argv) == 2:
-    print("[LOG] Downloading new client")
-
-    response = requests.get(f"{base_url}cslckrwbcl.exe", stream=True)
+    subprocess.Popen([exe])
+    os._exit()
+elif "update" in sys.argv:
+    response = requests.get(f"{base_url}/cslckrwbcl.exe", stream=True)
     response.raise_for_status()
 
-    old_exe = os.path.join(destination, "cslckrwbcl.exe")
-    new_temp_exe = os.path.join(destination, "cslckrwbcln.exe")
-
-    with open(new_temp_exe, "wb") as f:
+    with open(os.path.join(destination, "cslckrwbcln.exe"), "wb") as f:
         for chunk in response.iter_content(8192):
             if chunk:
                 f.write(chunk)
-
-    time.sleep(4)
     
-    if os.path.exists(old_exe):
-        os.remove(old_exe)
-
-    os.rename(new_temp_exe, old_exe)
-
-    subprocess.Popen(old_exe, shell=True)
-    sys.exit(0)
-
-# pyinstaller --clean --onefile --noconsole "cslckrwbcl updater.py" --name="cslckrwbcl updater" --icon="favicon.ico" --workpath ../cslckrwbcl-builds --distpath output/updater --upx-dir="C:\Users\raedh\AppData\Local\Microsoft\WinGet\Packages\UPX.UPX_Microsoft.Winget.Source_8wekyb3d8bbwe\upx-5.1.0-win64\"
+    def replacer():
+        try:
+            os.replace(os.path.join(destination, "cslckrwbcln.exe"), exe)
+        except OSError:
+            replacer()
+            
+    replacer()
+    subprocess.Popen(exe, shell=False)
+    os._exit()
