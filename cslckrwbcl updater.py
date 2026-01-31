@@ -7,7 +7,7 @@ destination = os.path.join(appdata_roaming, '.cslckrwbcl')
 exe = os.path.join(destination, filename)
 version = 0
 
-gv, vv = float(requests.get(f"{base_url}/version.txt").text.strip())
+gv, vv = float(requests.get("https://raw.githubusercontent.com/raedhashmi/cslckrwbcl/main/version.txt").text.strip()), float(requests.get(f"{base_url}/version.txt").text.strip())
 
 if gv > vv:
     base_url = "https://github.com/raedhashmi/cslckrwbcl/raw/refs/heads/main/output/"
